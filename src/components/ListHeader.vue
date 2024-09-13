@@ -2,7 +2,12 @@
   <header>
     <h1>Todo List</h1>
     <section>
-      <input type="text" placeholder="请输入待办事项" v-model.trim="content" />
+      <input
+        type="text"
+        placeholder="请输入待办事项"
+        v-model.trim="content"
+        @keyup.enter="addToDatabase(content)"
+      />
       <button @click="addToDatabase(content)">添加</button>
     </section>
   </header>
