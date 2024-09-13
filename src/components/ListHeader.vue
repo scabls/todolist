@@ -20,9 +20,16 @@ const content = ref('')
 let id = 0
 const addToDatabase = newItem => {
   if (newItem) {
-    if (database.value.length == 0) id = 0
+    if (database.value.length == 0) {
+      id = 0
+    } else {
+      id = database.value[database.value.length - 1].id + 1
+    }
     if (database.value.findIndex(item => item.content == newItem) != -1) alert('该任务已经被添加了')
-    else database.value.push({ id: id++, content: newItem, done: false })
+    else {
+      database.value.push({ id: id, content: newItem, done: false })
+      localStorage.setItem(`${id++}-${newItem}`, false)
+    }
     content.value = ''
   }
 }

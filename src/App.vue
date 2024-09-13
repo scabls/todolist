@@ -8,8 +8,22 @@
 import ListHeader from './components/ListHeader.vue'
 import ListMain from './components/ListMain.vue'
 import ListFooter from './components/ListFooter.vue'
-import { ref } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 const database = ref([])
+onMounted(() => {
+  const keys = ref(
+    Object.keys(localStorage).sort(function (a, b) {
+      return parseInt(a) - parseInt(b)
+    })
+  )
+  keys.value.forEach(key => {
+    database.value.push({
+      id: parseInt(key),
+      content: key.slice(key.indexOf('-') + 1),
+      done: localStorage.getItem(key) === 'true',
+    })
+  })
+})
 </script>
 <style>
 * {
