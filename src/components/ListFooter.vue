@@ -1,13 +1,28 @@
 <template>
-  <footer>
-    <input type="checkbox" />
-    <span>已办事项0/待办事项1</span>
-    <button>清除已办</button>
-    <button>清除所有</button>
+  <footer v-if="database.length != 0">
+    <input type="checkbox" :checked="allDone" @click="manageDone" />
+    <span>已办事项{{ completed }}/全部事项{{ database.length }}</span>
+    <button @click="clearDone">清除已办</button>
+    <button @click="database = []">清除所有</button>
   </footer>
 </template>
 
-<script setup></script>
+<script setup>
+const database = defineModel()
+import { ref, computed, watch, watchEffect } from 'vue'
+const completed = computed(() => {
+  if (database.value.length == 0) return null
+  else return database.value.filter(item => item.done == true).length
+})
+const allDone = computed(() => completed.value == database.value.length)
+const manageDone = () => {
+  if (allDone.value) database.value.forEach(item => (item.done = false))
+  else database.value.forEach(item => (item.done = true))
+}
+const clearDone = () => {
+  database.value = database.value.filter(item => item.done == false)
+}
+</script>
 
 <style scoped>
 footer {
