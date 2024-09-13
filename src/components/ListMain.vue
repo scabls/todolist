@@ -2,7 +2,14 @@
   <main>
     <template v-if="database.length != 0">
       <ul>
-        <li v-for="(item, index) in database" :key="item.id">
+        <li
+          v-for="(item, index) in database"
+          :key="item.id"
+          draggable="true"
+          @dragstart="handleDragStart(index)"
+          @dragover.prevent
+          @drop="handleDrop(index)"
+        >
           <input type="checkbox" :checked="item.done" @click="changeDone(item)" />
           <span v-if="editing != item.id" @click="handleClick(item.id)" :class="{ done: item.done }"
             >{{ item.content }}
@@ -23,7 +30,7 @@
 </template>
 
 <script setup>
-import { ref, nextTick, computed } from 'vue'
+import { ref, nextTick, computed, onMounted } from 'vue'
 const database = defineModel()
 const changeDone = item => {
   item.done = !item.done
@@ -57,6 +64,41 @@ const deleteTodo = (index, id, content) => {
   database.value.splice(index, 1)
   localStorage.removeItem(`${id}-${content}`)
 }
+
+const draggedIndex = ref(null)
+const handleDragStart = index => {
+  draggedIndex.value = index
+}
+const handleDrop = index => {
+  if (draggedIndex.value !== null) {
+    const draggedItem = database.value[draggedIndex.value]
+    database.value.splice(draggedIndex.value, 1)
+    database.value.splice(index, 0, draggedItem)
+    draggedIndex.value = null
+    updateLocalStorage()
+  }
+}
+const updateLocalStorage = () => {
+  localStorage.clear()
+  database.value.forEach((item, index) => {
+    localStorage.setItem(`${index}-${item.content}`, item.done)
+  })
+}
+
+onMounted(() => {
+  const keys = ref(
+    Object.keys(localStorage).sort(function (a, b) {
+      return parseInt(a) - parseInt(b)
+    })
+  )
+  keys.value.forEach(key => {
+    database.value.push({
+      id: parseInt(key),
+      content: key.slice(key.indexOf('-') + 1),
+      done: localStorage.getItem(key) === 'true',
+    })
+  })
+})
 </script>
 
 <style scoped>
