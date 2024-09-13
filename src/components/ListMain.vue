@@ -10,7 +10,13 @@
             :class="{ done: item.done }"
             >{{ item.content }}</span
           >
-          <input type="text" v-else v-model="item.content" ref="inputText" @blur="editing = null" />
+          <input
+            type="text"
+            v-else
+            v-model.trim="item.content"
+            ref="inputText"
+            @blur="handleBlur(item.content)"
+          />
           <button @click="database.splice(index, 1)">删除</button>
         </li>
       </ul>
@@ -29,6 +35,16 @@ const handleClick = id => {
   nextTick(() => {
     if (inputText.value) inputText.value[0].focus()
   })
+}
+const handleBlur = content => {
+  if (content) {
+    if (
+      database.value.findIndex(item => item.content == content) !=
+      database.value.findLastIndex(item => item.content == content)
+    )
+      alert('该任务已经被添加了')
+    else editing.value = null
+  } else alert('任务内容不能为空')
 }
 </script>
 
