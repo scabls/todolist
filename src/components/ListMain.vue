@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-import { ref, nextTick } from 'vue'
+import { ref, nextTick, computed } from 'vue'
 const database = defineModel()
 const changeDone = item => {
   item.done = !item.done
@@ -46,8 +46,8 @@ const handleBlur = (id, content, done) => {
       alert('该任务已经被添加了')
     else {
       const keys = ref(Object.keys(localStorage))
-      const oldKey = keys.value.find(key => parseInt(key) == id)
-      localStorage.removeItem(oldKey)
+      const oldKey = computed(() => keys.value.find(key => parseInt(key) == id))
+      localStorage.removeItem(oldKey.value)
       localStorage.setItem(`${id}-${content}`, done)
       editing.value = null
     }

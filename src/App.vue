@@ -8,7 +8,7 @@
 import ListHeader from './components/ListHeader.vue'
 import ListMain from './components/ListMain.vue'
 import ListFooter from './components/ListFooter.vue'
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted } from 'vue'
 const database = ref([])
 onMounted(() => {
   const keys = ref(
