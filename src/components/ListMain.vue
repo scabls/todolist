@@ -1,27 +1,36 @@
 <template>
   <main>
-    <ul>
-      <li>
-        <input type="checkbox" />
-        <span>aaaa</span>
-        <button>删除</button>
-      </li>
-      <li>
-        <input type="checkbox" />
-        <span class="done">aaaa</span>
-        <button>删除</button>
-      </li>
-      <li>
-        <input type="checkbox" />
-        <input type="text" />
-        <button>删除</button>
-      </li>
-    </ul>
-    <h2>暂无待办事项</h2>
+    <template v-if="database.length != 0">
+      <ul>
+        <li v-for="(item, index) in database" :key="item.id">
+          <input type="checkbox" v-model="item.done" />
+          <span
+            v-if="editing != item.id"
+            @click="handleClick(item.id)"
+            :class="{ done: item.done }"
+            >{{ item.content }}</span
+          >
+          <input type="text" v-else v-model="item.content" ref="inputText" @blur="editing = null" />
+          <button @click="database.splice(index, 1)">删除</button>
+        </li>
+      </ul>
+    </template>
+    <h2 v-else>暂无待办事项</h2>
   </main>
 </template>
 
-<script setup></script>
+<script setup>
+import { ref, nextTick } from 'vue'
+const database = defineModel()
+const editing = ref(null)
+const inputText = ref(null)
+const handleClick = id => {
+  editing.value = id
+  nextTick(() => {
+    if (inputText.value) inputText.value[0].focus()
+  })
+}
+</script>
 
 <style scoped>
 main {
@@ -57,7 +66,7 @@ ul li input[type='text'] {
   border: 1px solid lightpink;
   color: deepskyblue;
   border-radius: 5px;
-  outline: none;
+  outline: 1px solid lightpink;
 }
 ul li button {
   padding: 0.2rem 0.8rem;
