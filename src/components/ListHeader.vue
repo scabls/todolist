@@ -2,13 +2,26 @@
   <header>
     <h1>Todo List</h1>
     <section>
-      <input type="text" placeholder="请输入待办事项" />
-      <button>添加</button>
+      <input type="text" placeholder="请输入待办事项" v-model.trim="content" />
+      <button @click="addToDatabase(content)">添加</button>
     </section>
   </header>
 </template>
 
-<script setup></script>
+<script setup>
+import { ref } from 'vue'
+const database = defineModel()
+const content = ref('')
+let id = 0
+const addToDatabase = newItem => {
+  if (newItem) {
+    if (database.value.length == 0) id = 0
+    if (database.value.findIndex(item => item.content == newItem) != -1)
+      return alert('该任务已经被添加了')
+    database.value.push({ id: id++, content: newItem, done: false })
+  }
+}
+</script>
 
 <style scoped>
 header {
