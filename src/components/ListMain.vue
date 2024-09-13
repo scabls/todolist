@@ -3,21 +3,18 @@
     <template v-if="database.length != 0">
       <ul>
         <li v-for="(item, index) in database" :key="item.id">
-          <input type="checkbox" v-model="item.done" />
-          <span
-            v-if="editing != item.id"
-            @click="handleClick(item.id)"
-            :class="{ done: item.done }"
-            >{{ item.content }}</span
-          >
+          <input type="checkbox" :checked="item.done" @click="changeDone(item)" />
+          <span v-if="editing != item.id" @click="handleClick(item.id)" :class="{ done: item.done }"
+            >{{ item.content }}
+          </span>
           <input
             type="text"
             v-else
             v-model.trim="item.content"
             ref="inputText"
-            @blur="handleBlur(item.content)"
+            @blur="handleBlur(item.id, item.content, item.done)"
           />
-          <button @click="database.splice(index, 1)">删除</button>
+          <button @click="deleteTodo(index, item.id, item.content)">删除</button>
         </li>
       </ul>
     </template>
@@ -28,6 +25,10 @@
 <script setup>
 import { ref, nextTick } from 'vue'
 const database = defineModel()
+const changeDone = item => {
+  item.done = !item.done
+  localStorage.setItem(`${item.id}-${item.content}`, item.done)
+}
 const editing = ref(null)
 const inputText = ref(null)
 const handleClick = id => {
@@ -36,15 +37,25 @@ const handleClick = id => {
     if (inputText.value) inputText.value[0].focus()
   })
 }
-const handleBlur = content => {
+const handleBlur = (id, content, done) => {
   if (content) {
     if (
       database.value.findIndex(item => item.content == content) !=
       database.value.findLastIndex(item => item.content == content)
     )
       alert('该任务已经被添加了')
-    else editing.value = null
+    else {
+      const keys = ref(Object.keys(localStorage))
+      const oldKey = keys.value.find(key => parseInt(key) == id)
+      localStorage.removeItem(oldKey)
+      localStorage.setItem(`${id}-${content}`, done)
+      editing.value = null
+    }
   } else alert('任务内容不能为空')
+}
+const deleteTodo = (index, id, content) => {
+  database.value.splice(index, 1)
+  localStorage.removeItem(`${id}-${content}`)
 }
 </script>
 
