@@ -10,10 +10,10 @@
           @dragover.prevent
           @drop="handleDrop(index)"
         >
-          <input type="checkbox" :checked="item.done" @click="changeDone(item)" />
+          <input type="checkbox" v-model="item.done" />
           <span
             v-if="editingId != item.id"
-            @click="handleClick(item.id)"
+            @click="editingId = item.id"
             :class="{ done: item.done }"
           >
             {{ item.content }}
@@ -22,11 +22,11 @@
             type="text"
             v-else
             v-model.trim="item.content"
-            ref="inputText"
-            @blur="handleEdit(item.id, item.content, item.done)"
-            @keyup.enter="handleEdit(item.id, item.content, item.done)"
+            v-focus
+            @blur="handleEdit(item.content)"
+            @keyup.enter="handleEdit(item.content)"
           />
-          <button @click="deleteTodo(index, item.id, item.content)">删除</button>
+          <button @click="database.splice(index, 1)">删除</button>
         </li>
       </ul>
     </template>
@@ -35,46 +35,27 @@
 </template>
 
 <script setup>
-import { ref, nextTick, computed, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
+const vFocus = {
+  mounted(el) {
+    // el表示应用指令的dom
+    el.focus()
+  },
+}
 const database = defineModel()
 
 const editingId = ref(null)
-
-const inputText = ref(null)
 const draggedIndex = ref(null)
 
-const changeDone = item => {
-  item.done = !item.done
-  localStorage.setItem(`${item.id}-${item.content}`, item.done)
-}
-
-const handleClick = id => {
-  editingId.value = id
-  nextTick(() => {
-    if (inputText.value) inputText.value[0].focus()
-  })
-}
-
-const handleEdit = (id, content, done) => {
-  if (content) {
-    if (
-      database.value.findIndex(item => item.content == content) !=
-      database.value.findLastIndex(item => item.content == content)
-    )
-      alert('该任务已经被添加了')
-    else {
-      const keys = ref(Object.keys(localStorage))
-      const oldKey = computed(() => keys.value.find(key => parseInt(key) == id))
-      localStorage.removeItem(oldKey.value)
-      localStorage.setItem(`${id}-${content}`, done)
-      editingId.value = null
-    }
-  } else alert('任务内容不能为空')
-}
-
-const deleteTodo = (index, id, content) => {
-  database.value.splice(index, 1)
-  localStorage.removeItem(`${id}-${content}`)
+const getDatabase = () => (database.value = JSON.parse(localStorage.getItem('todoLists') || '[]'))
+const handleEdit = content => {
+  if (!content) return alert('任务内容不能为空')
+  if (
+    database.value.findIndex(item => item.content == content) !=
+    database.value.findLastIndex(item => item.content == content)
+  )
+    return alert('该任务已经被添加了')
+  editingId.value = null
 }
 
 const handleDragStart = index => {
@@ -86,30 +67,14 @@ const handleDrop = index => {
     database.value.splice(draggedIndex.value, 1)
     database.value.splice(index, 0, draggedItem)
     draggedIndex.value = null
-    updateLocalStorage()
   }
 }
-const updateLocalStorage = () => {
-  localStorage.clear()
-  database.value.forEach((item, index) => {
-    localStorage.setItem(`${index}-${item.content}`, item.done)
-  })
-}
 
-onMounted(() => {
-  const keys = ref(
-    Object.keys(localStorage).sort(function (a, b) {
-      return parseInt(a) - parseInt(b)
-    })
-  )
-  keys.value.forEach(key => {
-    database.value.push({
-      id: parseInt(key),
-      content: key.slice(key.indexOf('-') + 1),
-      done: localStorage.getItem(key) === 'true',
-    })
-  })
+watch(database, () => localStorage.setItem('todoLists', JSON.stringify(database.value)), {
+  deep: true,
 })
+
+onMounted(() => getDatabase())
 </script>
 
 <style scoped>
@@ -135,6 +100,9 @@ ul li:hover {
 ul li span {
   flex: 1;
   padding: 0 1rem;
+  white-space: normal;
+  word-break: break-word;
+  transition: 0.1s;
 }
 ul li span.done {
   color: lightcoral;
@@ -156,5 +124,12 @@ ul li button {
   font-size: 0.85rem;
   border-radius: 5px;
   cursor: pointer;
+}
+ul li button:hover {
+  background-color: pink;
+  color: #fff;
+}
+ul li button:active {
+  outline: 2px solid gold;
 }
 </style>

@@ -15,18 +15,17 @@
 
 <script setup>
 import { ref } from 'vue'
+
 const database = defineModel()
 const content = ref('')
 const id = ref(0)
+
 const addToDatabase = newItem => {
   if (!newItem) return
   if (database.value.length == 0) id.value = 0
   else id.value = database.value[database.value.length - 1].id + 1
   if (database.value.findIndex(item => item.content == newItem) != -1) alert('该任务已经被添加了')
-  else {
-    database.value.push({ id: id.value, content: newItem, done: false })
-    localStorage.setItem(`${id.value++}-${newItem}`, false)
-  }
+  else database.value.push({ id: id.value, content: newItem, done: false })
   content.value = ''
 }
 </script>
@@ -64,6 +63,10 @@ header section button {
   color: skyblue;
   border-radius: 0.5rem;
   cursor: pointer;
+}
+header section button:hover {
+  background-color: lightpink;
+  color: #fff;
 }
 header section button:active {
   outline: 2px solid gold;
