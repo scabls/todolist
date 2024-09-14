@@ -8,8 +8,8 @@
 </template>
 
 <script setup>
-const database = defineModel()
 import { ref, computed } from 'vue'
+const database = defineModel()
 const completed = computed(() => {
   if (database.value.length == 0) return null
   else return database.value.filter(item => item.done == true).length

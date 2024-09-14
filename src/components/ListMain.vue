@@ -11,8 +11,12 @@
           @drop="handleDrop(index)"
         >
           <input type="checkbox" :checked="item.done" @click="changeDone(item)" />
-          <span v-if="editing != item.id" @click="handleClick(item.id)" :class="{ done: item.done }"
-            >{{ item.content }}
+          <span
+            v-if="editingId != item.id"
+            @click="handleClick(item.id)"
+            :class="{ done: item.done }"
+          >
+            {{ item.content }}
           </span>
           <input
             type="text"
@@ -32,18 +36,24 @@
 <script setup>
 import { ref, nextTick, computed, onMounted } from 'vue'
 const database = defineModel()
+
+const editingId = ref(null)
+
+const inputText = ref(null)
+const draggedIndex = ref(null)
+
 const changeDone = item => {
   item.done = !item.done
   localStorage.setItem(`${item.id}-${item.content}`, item.done)
 }
-const editing = ref(null)
-const inputText = ref(null)
+
 const handleClick = id => {
-  editing.value = id
+  editingId.value = id
   nextTick(() => {
     if (inputText.value) inputText.value[0].focus()
   })
 }
+
 const handleBlur = (id, content, done) => {
   if (content) {
     if (
@@ -56,16 +66,16 @@ const handleBlur = (id, content, done) => {
       const oldKey = computed(() => keys.value.find(key => parseInt(key) == id))
       localStorage.removeItem(oldKey.value)
       localStorage.setItem(`${id}-${content}`, done)
-      editing.value = null
+      editingId.value = null
     }
   } else alert('任务内容不能为空')
 }
+
 const deleteTodo = (index, id, content) => {
   database.value.splice(index, 1)
   localStorage.removeItem(`${id}-${content}`)
 }
 
-const draggedIndex = ref(null)
 const handleDragStart = index => {
   draggedIndex.value = index
 }
