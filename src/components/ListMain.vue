@@ -23,7 +23,8 @@
             v-else
             v-model.trim="item.content"
             ref="inputText"
-            @blur="handleBlur(item.id, item.content, item.done)"
+            @blur="handleEdit(item.id, item.content, item.done)"
+            @keyup.enter="handleEdit(item.id, item.content, item.done)"
           />
           <button @click="deleteTodo(index, item.id, item.content)">删除</button>
         </li>
@@ -54,7 +55,7 @@ const handleClick = id => {
   })
 }
 
-const handleBlur = (id, content, done) => {
+const handleEdit = (id, content, done) => {
   if (content) {
     if (
       database.value.findIndex(item => item.content == content) !=

@@ -19,19 +19,15 @@ const database = defineModel()
 const content = ref('')
 const id = ref(0)
 const addToDatabase = newItem => {
-  if (newItem) {
-    if (database.value.length == 0) {
-      id.value = 0
-    } else {
-      id.value = database.value[database.value.length - 1].id + 1
-    }
-    if (database.value.findIndex(item => item.content == newItem) != -1) alert('该任务已经被添加了')
-    else {
-      database.value.push({ id: id.value, content: newItem, done: false })
-      localStorage.setItem(`${id.value++}-${newItem}`, false)
-    }
-    content.value = ''
+  if (!newItem) return
+  if (database.value.length == 0) id.value = 0
+  else id.value = database.value[database.value.length - 1].id + 1
+  if (database.value.findIndex(item => item.content == newItem) != -1) alert('该任务已经被添加了')
+  else {
+    database.value.push({ id: id.value, content: newItem, done: false })
+    localStorage.setItem(`${id.value++}-${newItem}`, false)
   }
+  content.value = ''
 }
 </script>
 

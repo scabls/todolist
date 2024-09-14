@@ -1,6 +1,6 @@
 <template>
   <footer v-if="database.length != 0">
-    <input type="checkbox" :checked="allDone" @click="manageDone" />
+    <input type="checkbox" :checked="allDone" @change="manageDone" />
     <span>已办事项{{ completed }}/全部事项{{ database.length }}</span>
     <button @click="clearDone">清除已办</button>
     <button @click="clearAll">清除所有</button>
@@ -10,23 +10,18 @@
 <script setup>
 import { ref, computed } from 'vue'
 const database = defineModel()
+const allDone = computed(() => database.value.every(item => item.done))
 const completed = computed(() => {
   if (database.value.length == 0) return null
-  else return database.value.filter(item => item.done == true).length
+  else return database.value.filter(item => item.done).length
 })
-const allDone = computed(() => completed.value == database.value.length)
-const manageDone = () => {
+const manageDone = event => {
   const keys = ref(Object.keys(localStorage))
-  if (allDone.value) {
-    database.value.forEach(item => (item.done = false))
-    keys.value.forEach(key => localStorage.setItem(key, false))
-  } else {
-    database.value.forEach(item => (item.done = true))
-    keys.value.forEach(key => localStorage.setItem(key, true))
-  }
+  database.value.forEach(item => (item.done = event.target.checked))
+  keys.value.forEach(key => localStorage.setItem(key, event.target.checked))
 }
 const clearDone = () => {
-  database.value = database.value.filter(item => item.done == false)
+  database.value = database.value.filter(item => !item.done)
   const keys = ref(Object.keys(localStorage))
   keys.value.forEach(key => {
     if (localStorage.getItem(key) === 'true') localStorage.removeItem(key)
