@@ -1,13 +1,28 @@
 <template>
-  <footer>
-    <input type="checkbox" />
-    <span>已办事项0/全部事项1</span>
-    <button>清除已办</button>
-    <button>清除所有</button>
+  <footer v-if="todos.length">
+    <input type="checkbox" :checked="allDone" @change="toggleAll" />
+    <span>已办事项{{ doneCount }}/全部事项{{ allCount }}</span>
+    <button @click="$emit('clear-done')">清除已办</button>
+    <button @click="$emit('clear-all')">清除所有</button>
   </footer>
+  <h2 v-else>暂无待办事项</h2>
 </template>
 
-<script setup></script>
+<script setup>
+import { computed } from 'vue'
+const props = defineProps({
+  todos: {
+    type: Array,
+    require: true,
+    default: () => [],
+  },
+})
+const emit = defineEmits(['toggle-all', 'clear-done', 'clear-all'])
+const allDone = computed(() => props.todos.every(todo => todo.done))
+const doneCount = computed(() => props.todos.filter(todo => todo.done).length)
+const allCount = computed(() => props.todos.length)
+const toggleAll = event => emit('toggle-all', event.target.checked)
+</script>
 
 <style scoped>
 footer {
@@ -38,5 +53,9 @@ footer button:hover {
 }
 footer button:active {
   outline: 2px solid gold;
+}
+h2 {
+  padding: 1rem;
+  text-align: center;
 }
 </style>

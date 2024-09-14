@@ -10,7 +10,7 @@
       @blur="handleEdit"
     />
     <span v-else @click="isEditing = true">{{ content }}</span>
-    <button>删除</button>
+    <button @click="$emit('del', id)">删除</button>
   </li>
 </template>
 
@@ -30,7 +30,7 @@ const props = defineProps({
     required: true,
   },
 })
-const emit = defineEmits(['toggle', 'edit'])
+const emit = defineEmits(['toggle', 'edit', 'del'])
 // 实现一个自定义的指令。约定: 在setup中, 如果一个变量为vFocus 就表示一个自定义指令
 // 指令都是应用于dom元素的, 可以扩展dom元素功能
 // 指令是一个对象
