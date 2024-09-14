@@ -2,13 +2,25 @@
   <header class="todo-header">
     <h1>TodoList</h1>
     <section class="add-todo">
-      <input type="text" />
-      <button>添加</button>
+      <input type="text" v-model.tirm="content" @keyup.enter="addTodo" />
+      <button @click="addTodo">添加</button>
     </section>
   </header>
 </template>
 
-<script setup></script>
+<script setup>
+import { ref } from 'vue'
+const content = ref('')
+const emit = defineEmits(['add-todo'])
+const addTodo = () => {
+  emit('add-todo', {
+    id: Date.now(),
+    content: content.value,
+    done: false,
+  })
+  content.value = ''
+}
+</script>
 
 <style scoped>
 header {

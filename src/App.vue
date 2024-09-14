@@ -1,5 +1,5 @@
 <template>
-  <TodoHeader />
+  <TodoHeader @add-todo="handleAddTodo" />
   <TodoMain />
   <TodoFooter />
 </template>
@@ -8,6 +8,12 @@
 import TodoHeader from './components/TodoHeader.vue'
 import TodoMain from './components/TodoMain.vue'
 import TodoFooter from './components/TodoFooter.vue'
+import { ref } from 'vue'
+const todos = ref([])
+const handleAddTodo = todo => {
+  todos.value.push(todo)
+  console.log(todos.value)
+}
 </script>
 
 <style>
