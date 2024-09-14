@@ -1,6 +1,6 @@
 <template>
   <TodoHeader @add-todo="handleAddTodo" />
-  <TodoMain />
+  <TodoMain :todos="todos" />
   <TodoFooter />
 </template>
 
@@ -12,7 +12,6 @@ import { ref } from 'vue'
 const todos = ref([])
 const handleAddTodo = todo => {
   todos.value.push(todo)
-  console.log(todos.value)
 }
 </script>
 
