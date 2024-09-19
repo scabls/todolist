@@ -1,43 +1,33 @@
 <template>
-  <TodoHeader @add-todo="handleAddTodo" />
+  <TodoHeader />
   <TodoMain>
     <draggable :list="todos" animation="300" item-key="id">
       <template #item="{ element }">
-        <TodoItem
-          v-bind="element"
-          @toggle="handleToggle"
-          @edit="handleEdit"
-          @del="handleDel"
-        ></TodoItem>
+        <TodoItem v-bind="element"></TodoItem>
       </template>
     </draggable>
   </TodoMain>
-  <TodoFooter
-    :todos="todos"
-    @toggle-all="handleToggleAll"
-    @clear-done="handleClearDone"
-    @clear-all="handleClearAll"
-  />
+  <TodoFooter />
 </template>
 
 <script setup>
+import { onMounted } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useTodosStore } from '@/stores/todos.js'
+
+import draggable from 'vuedraggable'
+
 import TodoHeader from './components/TodoHeader.vue'
 import TodoMain from './components/TodoMain.vue'
 import TodoItem from './components/TodoItem.vue'
 import TodoFooter from './components/TodoFooter.vue'
-import draggable from 'vuedraggable'
-import useTodos from './hooks/useTodos'
 
-const {
-  todos,
-  handleAddTodo,
-  handleToggle,
-  handleEdit,
-  handleDel,
-  handleToggleAll,
-  handleClearDone,
-  handleClearAll,
-} = useTodos()
+// 解构状态, 使用storeToRefs
+const { todos } = storeToRefs(useTodosStore())
+// 解构方法, 使用调用store函数
+const { getTodos } = useTodosStore()
+
+onMounted(() => getTodos())
 </script>
 
 <style>

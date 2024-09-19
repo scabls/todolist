@@ -1,27 +1,19 @@
 <template>
   <footer v-if="todos.length">
-    <input type="checkbox" :checked="allDone" @change="toggleAll" />
+    <input type="checkbox" :checked="allDone" @change="toggleAll($event.target.checked)" />
     <span>已办事项{{ doneCount }}/全部事项{{ allCount }}</span>
-    <button @click="$emit('clear-done')">清除已办</button>
-    <button @click="$emit('clear-all')">清除所有</button>
+    <button @click="clearDone">清除已办</button>
+    <button @click="clearAll">清除所有</button>
   </footer>
   <h2 v-else>暂无待办事项</h2>
 </template>
 
 <script setup>
-import { computed } from 'vue'
-const props = defineProps({
-  todos: {
-    type: Array,
-    require: true,
-    default: () => [],
-  },
-})
-const emit = defineEmits(['toggle-all', 'clear-done', 'clear-all'])
-const allDone = computed(() => props.todos.every(todo => todo.done))
-const doneCount = computed(() => props.todos.filter(todo => todo.done).length)
-const allCount = computed(() => props.todos.length)
-const toggleAll = event => emit('toggle-all', event.target.checked)
+import { storeToRefs } from 'pinia'
+import { useTodosStore } from '@/stores/todos'
+
+const { todos, allDone, doneCount, allCount } = storeToRefs(useTodosStore())
+const { toggleAll, clearDone, clearAll } = useTodosStore()
 </script>
 
 <style scoped>

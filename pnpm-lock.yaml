@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      pinia:
+        specifier: ^2.2.2
+        version: 2.2.2(vue@3.5.5)
       vue:
         specifier: ^3.4.29
         version: 3.5.5
@@ -293,6 +296,9 @@ packages:
   '@vue/compiler-ssr@3.5.5':
     resolution: {integrity: sha512-oFasHnpv/upubjJEmqiTKQYb4qS3ziJddf4UVWuFw6ebk/QTrTUc+AUoTJdo39x9g+AOQBzhOU0ICCRuUjvkmw==}
 
+  '@vue/devtools-api@6.6.4':
+    resolution: {integrity: sha512-sGhTPMuXqZ1rVOk32RylztWkfXTRhuS7vgAKv0zjqk8gbsHkJ7xfFf+jbySxt7tWObEJwyKaHMikV/WGDiQm8g==}
+
   '@vue/reactivity@3.5.5':
     resolution: {integrity: sha512-V4tTWElZQhT73PSK3Wnax9R9m4qvMX+LeKHnfylZc6SLh4Jc5/BPakp6e3zEhKWi5AN8TDzRkGnLkp8OqycYng==}
 
@@ -340,6 +346,18 @@ packages:
 
   picocolors@1.1.0:
     resolution: {integrity: sha512-TQ92mBOW0l3LeMeyLV6mzy/kWr8lkd/hp3mTg7wYK7zJhuBStmGMBG0BdeDZS/dZx1IukaX6Bk11zcln25o1Aw==}
+
+  pinia@2.2.2:
+    resolution: {integrity: sha512-ja2XqFWZC36mupU4z1ZzxeTApV7DOw44cV4dhQ9sGwun+N89v/XP7+j7q6TanS1u1tdbK4r+1BUx7heMaIdagA==}
+    peerDependencies:
+      '@vue/composition-api': ^1.4.0
+      typescript: '>=4.4.4'
+      vue: ^2.6.14 || ^3.3.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
+      typescript:
+        optional: true
 
   postcss@8.4.45:
     resolution: {integrity: sha512-7KTLTdzdZZYscUc65XmjFiB73vBhBfbPztCYdUNvlaso9PrzjzcmjqBPR0lNGkcVlcO4BjiO5rK/qNz+XAen1Q==}
@@ -390,6 +408,17 @@ packages:
       sugarss:
         optional: true
       terser:
+        optional: true
+
+  vue-demi@0.14.10:
+    resolution: {integrity: sha512-nMZBOwuzabUO0nLgIcc6rycZEebF6eeUfaiQx9+WSk8e29IbLvPU9feI6tqW4kTo3hvoYAJkMh8n8D0fuISphg==}
+    engines: {node: '>=12'}
+    hasBin: true
+    peerDependencies:
+      '@vue/composition-api': ^1.0.0-rc.1
+      vue: ^3.0.0-0 || ^2.6.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
         optional: true
 
   vue@3.5.5:
@@ -577,6 +606,8 @@ snapshots:
       '@vue/compiler-dom': 3.5.5
       '@vue/shared': 3.5.5
 
+  '@vue/devtools-api@6.6.4': {}
+
   '@vue/reactivity@3.5.5':
     dependencies:
       '@vue/shared': 3.5.5
@@ -644,6 +675,12 @@ snapshots:
 
   picocolors@1.1.0: {}
 
+  pinia@2.2.2(vue@3.5.5):
+    dependencies:
+      '@vue/devtools-api': 6.6.4
+      vue: 3.5.5
+      vue-demi: 0.14.10(vue@3.5.5)
+
   postcss@8.4.45:
     dependencies:
       nanoid: 3.3.7
@@ -685,6 +722,10 @@ snapshots:
       rollup: 4.21.3
     optionalDependencies:
       fsevents: 2.3.3
+
+  vue-demi@0.14.10(vue@3.5.5):
+    dependencies:
+      vue: 3.5.5
 
   vue@3.5.5:
     dependencies:

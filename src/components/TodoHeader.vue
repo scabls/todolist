@@ -2,18 +2,22 @@
   <header class="todo-header">
     <h1>TodoList</h1>
     <section class="add-todo">
-      <input type="text" v-model.tirm="content" @keyup.enter="addTodo" />
-      <button @click="addTodo">添加</button>
+      <form @submit.prevent="handleSubmit">
+        <input type="text" v-model.tirm="content" />
+        <button>添加</button>
+      </form>
     </section>
   </header>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import { useTodosStore } from '@/stores/todos'
+const { addTodo } = useTodosStore()
 const content = ref('')
-const emit = defineEmits(['add-todo'])
-const addTodo = () => {
-  emit('add-todo', {
+const handleSubmit = () => {
+  if (!content.value) return
+  addTodo({
     id: Date.now(),
     content: content.value,
     done: false,
@@ -33,7 +37,7 @@ header h1 {
   color: #fff;
   text-shadow: 2px 2px 1px lightpink;
 }
-header section {
+header section form {
   display: flex;
   justify-content: center;
   gap: 5px;

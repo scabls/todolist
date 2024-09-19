@@ -10,12 +10,16 @@
       @blur="handleEdit"
     />
     <span v-else @click="isEditing = true" :class="{ done: done }">{{ content }}</span>
-    <button @click="$emit('del', id)">删除</button>
+    <button @click="handleDelete">删除</button>
   </li>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+
+import { useTodosStore } from '@/stores/todos'
+const { toggleTodo, editTodo, removeTodo } = useTodosStore()
+
 const props = defineProps({
   id: {
     type: Number,
@@ -30,7 +34,6 @@ const props = defineProps({
     required: true,
   },
 })
-const emit = defineEmits(['toggle', 'edit', 'del'])
 // 实现一个自定义的指令。约定: 在setup中, 如果一个变量为vFocus 就表示一个自定义指令
 // 指令都是应用于dom元素的, 可以扩展dom元素功能
 // 指令是一个对象
@@ -41,10 +44,13 @@ const vFocus = {
   },
 }
 const isEditing = ref(false)
-const handleChange = event => emit('toggle', props.id, event.target.checked)
+const handleChange = event => toggleTodo(props.id, event.target.checked)
 const handleEdit = event => {
   isEditing.value = false
-  emit('edit', props.id, event.target.value)
+  editTodo(props.id, event.target.value)
+}
+const handleDelete = () => {
+  removeTodo(props.id)
 }
 </script>
 
